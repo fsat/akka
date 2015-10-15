@@ -66,7 +66,7 @@ public class RecipeManualTrigger extends RecipeTest {
               (p, s) -> new Pair<>(p, s),
               (builder, source, sink) -> {
                 final FanInShape2<Message, Trigger, Pair<Message, Trigger>> zip =
-                  builder.graph(Zip.create());
+                  builder.add(Zip.create());
                 builder.from(elements).to(zip.in0());
                 builder.from(source).to(zip.in1());
                 builder.from(zip.out()).via(takeMessage).to(sink);
@@ -119,7 +119,7 @@ public class RecipeManualTrigger extends RecipeTest {
               (p, s) -> new Pair<>(p, s),
               (builder, source, sink) -> {
                 final FanInShape2<Message, Trigger, Message> zipWith =
-                  builder.graph(ZipWith.create((msg, trigger) -> msg));
+                  builder.add(ZipWith.create((msg, trigger) -> msg));
                 builder.from(elements).to(zipWith.in0());
                 builder.from(source).to(zipWith.in1());
                 builder.from(zipWith.out()).to(sink);

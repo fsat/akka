@@ -48,10 +48,10 @@ public class StreamPartialFlowGraphDocTest {
     
     final Graph<UniformFanInShape<Integer, Integer>, BoxedUnit> pickMaxOfThree =
         FlowGraph.create(builder -> {
-          final FanInShape2<Integer, Integer, Integer> zip1 = builder.graph(zip);
-          final FanInShape2<Integer, Integer, Integer> zip2 = builder.graph(zip);
+          final FanInShape2<Integer, Integer, Integer> zip1 = builder.add(zip);
+          final FanInShape2<Integer, Integer, Integer> zip2 = builder.add(zip);
           
-          builder.edge(zip1.out(), zip2.in0());
+          builder.from(zip1.out()).to(zip2.in0());
           // return the shape, which has three inputs and one output
           return new UniformFanInShape<Integer, Integer>(zip2.out(), 
               new Inlet[] {zip1.in0(), zip1.in1(), zip2.in1()});
@@ -63,7 +63,7 @@ public class StreamPartialFlowGraphDocTest {
       RunnableGraph.<Future<Integer>>fromGraph(
         FlowGraph.create(resultSink, (builder, sink) -> {
           // import the partial flow graph explicitly
-          final UniformFanInShape<Integer, Integer> pm = builder.graph(pickMaxOfThree);
+          final UniformFanInShape<Integer, Integer> pm = builder.add(pickMaxOfThree);
           
           builder.from(Source.single(1)).to(pm.in(0));
           builder.from(Source.single(2)).to(pm.in(1));
@@ -101,7 +101,7 @@ public class StreamPartialFlowGraphDocTest {
       FlowGraph.create(
         builder -> {
           final FanInShape2<Integer, Integer, Pair<Integer, Integer>> zip =
-              builder.graph(Zip.create());
+              builder.add(Zip.create());
 
           builder.from(ints.filter(i -> i % 2 == 0)).to(zip.in0());
           builder.from(ints.filter(i -> i % 2 == 1)).to(zip.in1());
@@ -120,9 +120,9 @@ public class StreamPartialFlowGraphDocTest {
     //#flow-from-partial-flow-graph
     final Flow<Integer, Pair<Integer, String>, BoxedUnit> pairs = Flow.fromGraph(FlowGraph.create(
         b -> {
-          final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
+          final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
           final FanInShape2<Integer, String, Pair<Integer, String>> zip =
-              b.graph(Zip.create());
+              b.add(Zip.create());
 
           b.from(bcast).to(zip.in0());
           b.from(bcast).via(Flow.of(Integer.class).map(i -> i.toString())).to(zip.in1());

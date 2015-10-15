@@ -884,7 +884,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends
     this.viaMat(Flow.fromGraph(FlowGraph.create(that,
       new function.Function2[FlowGraph.Builder[M], SourceShape[T], FlowShape[Out, Out @ uncheckedVariance Pair T]] {
         def apply(b: FlowGraph.Builder[M], s: SourceShape[T]): FlowShape[Out, Out @uncheckedVariance Pair T] = {
-          val zip: FanInShape2[Out, T, Out Pair T] = b.graph(Zip.create[Out, T])
+          val zip: FanInShape2[Out, T, Out Pair T] = b.add(Zip.create[Out, T])
           b.from(s).to(zip.in1)
           FlowShape(zip.in0, zip.out)
         }

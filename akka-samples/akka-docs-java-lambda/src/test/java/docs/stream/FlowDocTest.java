@@ -215,7 +215,7 @@ public class FlowDocTest {
       Flow.fromGraph(FlowGraph.create(
               Source.from(oneSecond, oneSecond, ""),
               (b, tickSource) -> {
-                  FanInShape2<String, Integer, Integer> zip = b.graph(ZipWith.create(Keep.right()));
+                  FanInShape2<String, Integer, Integer> zip = b.add(ZipWith.create(Keep.right()));
                   b.from(tickSource).to(zip.in0());
                   return new FlowShape<>(zip.in1(), zip.out());
               }));

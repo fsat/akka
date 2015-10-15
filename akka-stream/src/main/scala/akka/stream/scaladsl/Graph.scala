@@ -556,7 +556,7 @@ object FlowGraph extends GraphApply {
   class Builder[+M] private[stream] () {
     private var moduleInProgress: Module = EmptyModule
 
-    def addEdge[A, B, M2](from: Outlet[A], via: Graph[FlowShape[A, B], M2], to: Inlet[B]): Unit = {
+    private[FlowGraph] def addEdge[A, B, M2](from: Outlet[A], via: Graph[FlowShape[A, B], M2], to: Inlet[B]): Unit = {
       val flowCopy = via.module.carbonCopy
       moduleInProgress =
         moduleInProgress
@@ -565,7 +565,7 @@ object FlowGraph extends GraphApply {
           .wire(flowCopy.shape.outlets.head, to)
     }
 
-    def addEdge[T](from: Outlet[T], to: Inlet[T]): Unit =
+    private[FlowGraph] def addEdge[T](from: Outlet[T], to: Inlet[T]): Unit =
       moduleInProgress = moduleInProgress.wire(from, to)
 
     /**

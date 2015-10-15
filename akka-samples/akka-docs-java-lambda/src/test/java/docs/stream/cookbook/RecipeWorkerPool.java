@@ -48,12 +48,12 @@ public class RecipeWorkerPool extends RecipeTest {
     return Flow.fromGraph(FlowGraph.create(b -> {
         boolean waitForAllDownstreams = true;
         final UniformFanOutShape<In, In> balance =
-                b.graph(Balance.<In>create(workerCount, waitForAllDownstreams));
+                b.add(Balance.<In>create(workerCount, waitForAllDownstreams));
         final UniformFanInShape<Out, Out> merge =
-                b.graph(Merge.<Out>create(workerCount));
+                b.add(Merge.<Out>create(workerCount));
 
         for (int i = 0; i < workerCount; i++) {
-            b.flow(balance.out(i), worker, merge.in(i));
+            b.from(balance.out(i)).via(worker).to(merge.in(i));
         }
 
         return new FlowShape<>(balance.in(), merge.out());

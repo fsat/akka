@@ -47,8 +47,8 @@ public class GraphCyclesDocTest {
       });
 
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
-      final UniformFanInShape<Integer, Integer> merge = b.graph(Merge.create(2));
-      final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
+      final UniformFanInShape<Integer, Integer> merge = b.add(Merge.create(2));
+      final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
 
       b.from(source).via(merge).via(printFlow).via(bcast).to(Sink.ignore());
                     b.to(merge)              .from(bcast);
@@ -68,8 +68,8 @@ public class GraphCyclesDocTest {
     //#unfair
     // WARNING! The graph below stops consuming from "source" after a few steps
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
-      final MergePreferredShape<Integer> merge = b.graph(MergePreferred.create(1));
-      final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
+      final MergePreferredShape<Integer> merge = b.add(MergePreferred.create(1));
+      final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
 
       b.from(source).via(merge).via(printFlow).via(bcast).to(Sink.ignore());
                     b.to(merge.preferred())  .from(bcast);
@@ -87,10 +87,10 @@ public class GraphCyclesDocTest {
         });
     //#dropping
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
-      final UniformFanInShape<Integer, Integer> merge = b.graph(Merge.create(2));
-      final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
-      final FlowShape<Integer, Integer> droppyFlow = b.graph(
-          Flow.of(Integer.class).buffer(10, OverflowStrategy.dropHead()));
+      final UniformFanInShape<Integer, Integer> merge = b.add(Merge.create(2));
+      final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
+      final FlowShape<Integer, Integer> droppyFlow = b.add(
+        Flow.of(Integer.class).buffer(10, OverflowStrategy.dropHead()));
 
       b.from(source).via(merge).via(printFlow).via(bcast).to(Sink.ignore());
                    b.to(merge).via(droppyFlow).from(bcast);
@@ -110,8 +110,8 @@ public class GraphCyclesDocTest {
     // WARNING! The graph below never processes any elements
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
       final FanInShape2<Integer, Integer, Integer>
-        zip = b.graph(ZipWith.create((Integer left, Integer right) -> left));
-      final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
+        zip = b.add(ZipWith.create((Integer left, Integer right) -> left));
+      final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
 
       b.from(source).to(zip.in0());
       b.from(zip.out()).via(printFlow).via(bcast).to(Sink.ignore());
@@ -131,9 +131,9 @@ public class GraphCyclesDocTest {
     //#zipping-live
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
       final FanInShape2<Integer, Integer, Integer>
-        zip = b.graph(ZipWith.create((Integer left, Integer right) -> left));
-      final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.create(2));
-      final UniformFanInShape<Integer, Integer> concat = b.graph(Concat.create());
+        zip = b.add(ZipWith.create((Integer left, Integer right) -> left));
+      final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.create(2));
+      final UniformFanInShape<Integer, Integer> concat = b.add(Concat.create());
 
       b.from(source).to(zip.in0());
       b.from(zip.out()).via(printFlow).via(bcast).to(Sink.ignore());

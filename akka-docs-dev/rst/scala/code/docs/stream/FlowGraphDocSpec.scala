@@ -32,7 +32,7 @@ class FlowGraphDocSpec extends AkkaSpec {
       val f1, f2, f3, f4 = Flow[Int].map(_ + 10)
 
       in ~> f1 ~> bcast ~> f2 ~> merge ~> f3 ~> out
-                  bcast ~> f4 ~> merge
+      bcast ~> f4 ~> merge
       ClosedShape
     })
     //#simple-flow-graph
@@ -41,30 +41,6 @@ class FlowGraphDocSpec extends AkkaSpec {
     //#simple-graph-run
     g.run()
     //#simple-graph-run
-  }
-
-  "build simple graph without implicits" in {
-    //#simple-flow-graph-no-implicits
-    val g = RunnableGraph.fromGraph(FlowGraph.create() { builder: FlowGraph.Builder[Unit] =>
-      val in = Source(1 to 10)
-      val out = Sink.ignore
-
-      val broadcast = builder.add(Broadcast[Int](2))
-      val merge = builder.add(Merge[Int](2))
-
-      val f1 = Flow[Int].map(_ + 10)
-      val f3 = Flow[Int].map(_.toString)
-      val f2 = Flow[Int].map(_ + 20)
-
-      builder.addEdge(builder.add(in), broadcast.in)
-      builder.addEdge(broadcast.out(0), f1, merge.in(0))
-      builder.addEdge(broadcast.out(1), f2, merge.in(1))
-      builder.addEdge(merge.out, f3, builder.add(out))
-      ClosedShape
-    })
-    //#simple-flow-graph-no-implicits
-
-    g.run()
   }
 
   "flow connection errors" in {

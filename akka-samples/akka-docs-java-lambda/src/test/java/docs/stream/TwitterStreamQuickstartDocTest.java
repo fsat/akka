@@ -280,7 +280,7 @@ public class TwitterStreamQuickstartDocTest {
 
     //#flow-graph-broadcast
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
-      final UniformFanOutShape<Tweet, Tweet> bcast = b.graph(Broadcast.create(2));
+      final UniformFanOutShape<Tweet, Tweet> bcast = b.add(Broadcast.create(2));
       final Flow<Tweet, Author, BoxedUnit> toAuthor = Flow.of(Tweet.class).map(t -> t.author);
       final Flow<Tweet, Hashtag, BoxedUnit> toTags =
           Flow.of(Tweet.class).mapConcat(t -> new ArrayList<Hashtag>(t.hashtags()));

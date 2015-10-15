@@ -54,22 +54,19 @@ object MaterializationBenchmark {
     })
   }
 
-  val graphWithImportedFlowBuilder = (numOfFlows: Int) => {
-    val flow = Flow[Unit].map(identity)
-    RunnableGraph.fromGraph(FlowGraph.create() { b ⇒
-      val source = b.add(Source.single(()))
-      var outlet = source
+  val graphWithImportedFlowBuilder = (numOfFlows: Int) =>
+    RunnableGraph.fromGraph(FlowGraph.create(Source.single(())) { implicit b ⇒ source ⇒
+      import FlowGraph.Implicits._
+      val flow = Flow[Unit].map(identity)
+      var outlet: Outlet[Unit] = source.outlet
       for (i <- 0 until numOfFlows) {
         val flowShape = b.add(flow)
-        b.addEdge(outlet, flowShape.inlet)
+        outlet ~> flowShape
         outlet = flowShape.outlet
       }
-
-      val sink = b.add(Sink.ignore)
-      b.addEdge(outlet, sink)
+      outlet ~> Sink.ignore
       ClosedShape
     })
-  }
 }
 
 @State(Scope.Benchmark)

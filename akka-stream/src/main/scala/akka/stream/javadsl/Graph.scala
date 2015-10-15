@@ -247,20 +247,12 @@ object FlowGraph extends GraphCreate {
   final class Builder[+Mat]()(private implicit val delegate: scaladsl.FlowGraph.Builder[Mat]) { self ⇒
     import akka.stream.scaladsl.FlowGraph.Implicits._
 
-    def flow[A, B, M](from: Outlet[A], via: Graph[FlowShape[A, B], M], to: Inlet[B]): Unit = delegate.addEdge(from, via, to)
-
-    def edge[T](from: Outlet[T], to: Inlet[T]): Unit = delegate.addEdge(from, to)
-
     /**
      * Import a graph into this module, performing a deep copy, discarding its
      * materialized value and returning the copied Ports that are now to be
      * connected.
      */
-    def graph[S <: Shape](graph: Graph[S, _]): S = delegate.add(graph)
-
-    def source[T](source: Graph[SourceShape[T], _]): Outlet[T] = delegate.add(source).outlet
-
-    def sink[T](sink: Graph[SinkShape[T], _]): Inlet[T] = delegate.add(sink).inlet
+    def add[S <: Shape](graph: Graph[S, _]): S = delegate.add(graph)
 
     /**
      * Returns an [[Outlet]] that gives access to the materialized value of this graph. Once the graph is materialized

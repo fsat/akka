@@ -132,8 +132,8 @@ public class StreamTcpDocTest {
       final Flow<ByteString, ByteString, BoxedUnit> serverLogic =
           Flow.fromGraph(FlowGraph.create(builder -> {
             final UniformFanInShape<ByteString, ByteString> concat =
-                builder.graph(Concat.create());
-            final FlowShape<ByteString, ByteString> echo = builder.graph(echoFlow);
+                builder.add(Concat.create());
+            final FlowShape<ByteString, ByteString> echo = builder.add(echoFlow);
 
             builder
               .from(welcome).to(concat)

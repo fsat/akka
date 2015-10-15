@@ -13,7 +13,6 @@ import org.junit.Test;
 import akka.actor.ActorSystem;
 import akka.stream.*;
 import akka.stream.javadsl.*;
-import akka.japi.*;
 import akka.testkit.JavaTestKit;
 
 public class FlowParallelismDocTest {
@@ -63,9 +62,9 @@ public class FlowParallelismDocTest {
     Flow<ScoopOfBatter, Pancake, BoxedUnit> pancakeChef =
       Flow.fromGraph(FlowGraph.create(b -> {
         final UniformFanInShape<Pancake, Pancake> mergePancakes =
-          b.graph(Merge.create(2));
+          b.add(Merge.create(2));
         final UniformFanOutShape<ScoopOfBatter, ScoopOfBatter> dispatchBatter =
-          b.graph(Balance.create(2));
+          b.add(Balance.create(2));
 
         // Using two frying pans in parallel, both fully cooking a pancake from the batter.
         // We always put the next scoop of batter to the first frying pan that becomes available.
@@ -86,9 +85,9 @@ public class FlowParallelismDocTest {
     Flow<ScoopOfBatter, Pancake, BoxedUnit> pancakeChef =
       Flow.fromGraph(FlowGraph.create(b -> {
         final UniformFanInShape<Pancake, Pancake> mergePancakes =
-          b.graph(Merge.create(2));
+          b.add(Merge.create(2));
         final UniformFanOutShape<ScoopOfBatter, ScoopOfBatter> dispatchBatter =
-          b.graph(Balance.create(2));
+          b.add(Balance.create(2));
 
         // Using two pipelines, having two frying pans each, in total using
         // four frying pans
@@ -113,9 +112,9 @@ public class FlowParallelismDocTest {
     Flow<ScoopOfBatter, HalfCookedPancake, BoxedUnit> pancakeChefs1 =
       Flow.fromGraph(FlowGraph.create(b -> {
         final UniformFanInShape<HalfCookedPancake, HalfCookedPancake> mergeHalfCooked =
-          b.graph(Merge.create(2));
+          b.add(Merge.create(2));
         final UniformFanOutShape<ScoopOfBatter, ScoopOfBatter> dispatchBatter =
-          b.graph(Balance.create(2));
+          b.add(Balance.create(2));
 
         // Two chefs work with one frying pan for each, half-frying the pancakes then putting
         // them into a common pool
@@ -128,9 +127,9 @@ public class FlowParallelismDocTest {
     Flow<HalfCookedPancake, Pancake, BoxedUnit> pancakeChefs2 =
       Flow.fromGraph(FlowGraph.create(b -> {
         final UniformFanInShape<Pancake, Pancake> mergePancakes =
-          b.graph(Merge.create(2));
+          b.add(Merge.create(2));
         final UniformFanOutShape<HalfCookedPancake, HalfCookedPancake> dispatchHalfCooked =
-          b.graph(Balance.create(2));
+          b.add(Balance.create(2));
 
         // Two chefs work with one frying pan for each, finishing the pancakes then putting
         // them into a common pool

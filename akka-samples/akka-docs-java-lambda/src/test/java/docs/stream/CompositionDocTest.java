@@ -105,14 +105,14 @@ public class CompositionDocTest {
     //#complex-graph
     RunnableGraph.fromGraph(
       FlowGraph.create(builder -> {
-        final Outlet<Integer> A = builder.source(Source.single(0));
-        final UniformFanOutShape<Integer, Integer> B = builder.graph(Broadcast.create(2));
-        final UniformFanInShape<Integer, Integer> C = builder.graph(Merge.create(2));
+        final SourceShape<Integer> A = builder.add(Source.single(0));
+        final UniformFanOutShape<Integer, Integer> B = builder.add(Broadcast.create(2));
+        final UniformFanInShape<Integer, Integer> C = builder.add(Merge.create(2));
         final FlowShape<Integer, Integer> D =
-          builder.graph(Flow.of(Integer.class).map(i -> i + 1));
-        final UniformFanOutShape<Integer, Integer> E = builder.graph(Balance.create(2));
-        final UniformFanInShape<Integer, Integer> F = builder.graph(Merge.create(2));
-        final Inlet<Integer> G = builder.sink(Sink.foreach(System.out::println));
+          builder.add(Flow.of(Integer.class).map(i -> i + 1));
+        final UniformFanOutShape<Integer, Integer> E = builder.add(Balance.create(2));
+        final UniformFanInShape<Integer, Integer> F = builder.add(Merge.create(2));
+        final SinkShape<Integer> G = builder.add(Sink.foreach(System.out::println));
 
         builder.from(F).to(C);
         builder.from(A).via(B).via(C).to(F);
@@ -125,14 +125,14 @@ public class CompositionDocTest {
     //#complex-graph-alt
     RunnableGraph.fromGraph(
       FlowGraph.create(builder -> {
-      final Outlet<Integer> A = builder.source(Source.single(0));
-      final UniformFanOutShape<Integer, Integer> B = builder.graph(Broadcast.create(2));
-      final UniformFanInShape<Integer, Integer> C = builder.graph(Merge.create(2));
+      final SourceShape<Integer> A = builder.add(Source.single(0));
+      final UniformFanOutShape<Integer, Integer> B = builder.add(Broadcast.create(2));
+      final UniformFanInShape<Integer, Integer> C = builder.add(Merge.create(2));
       final FlowShape<Integer, Integer> D =
-        builder.graph(Flow.of(Integer.class).map(i -> i + 1));
-      final UniformFanOutShape<Integer, Integer> E = builder.graph(Balance.create(2));
-      final UniformFanInShape<Integer, Integer> F = builder.graph(Merge.create(2));
-      final Inlet<Integer> G = builder.sink(Sink.foreach(System.out::println));
+        builder.add(Flow.of(Integer.class).map(i -> i + 1));
+      final UniformFanOutShape<Integer, Integer> E = builder.add(Balance.create(2));
+      final UniformFanInShape<Integer, Integer> F = builder.add(Merge.create(2));
+      final SinkShape<Integer> G = builder.add(Sink.foreach(System.out::println));
 
       builder.from(F.out()).to(C.in(0));
       builder.from(A).to(B.in());
@@ -151,14 +151,14 @@ public class CompositionDocTest {
     //#partial-graph
     final Graph<FlowShape<Integer, Integer>, BoxedUnit> partial =
       FlowGraph.create(builder -> {
-        final UniformFanOutShape<Integer, Integer> B = builder.graph(Broadcast.create(2));
-        final UniformFanInShape<Integer, Integer> C = builder.graph(Merge.create(2));
-        final UniformFanOutShape<Integer, Integer> E = builder.graph(Balance.create(2));
-        final UniformFanInShape<Integer, Integer> F = builder.graph(Merge.create(2));
+        final UniformFanOutShape<Integer, Integer> B = builder.add(Broadcast.create(2));
+        final UniformFanInShape<Integer, Integer> C = builder.add(Merge.create(2));
+        final UniformFanOutShape<Integer, Integer> E = builder.add(Balance.create(2));
+        final UniformFanInShape<Integer, Integer> F = builder.add(Merge.create(2));
 
         builder.from(F.out()).to(C.in(0));
         builder.from(B).via(C).to(F);
-        builder.from(B).via(builder.graph(Flow.of(Integer.class).map(i -> i + 1))).via(E).to(F);
+        builder.from(B).via(builder.add(Flow.of(Integer.class).map(i -> i + 1))).via(E).to(F);
 
         return new FlowShape<Integer, Integer>(B.in(), E.out(1));
       });
@@ -177,9 +177,9 @@ public class CompositionDocTest {
     // Simple way to create a graph backed Source
     final Source<Integer, BoxedUnit> source = Source.fromGraph(
       FlowGraph.create(builder -> {
-        final UniformFanInShape<Integer, Integer> merge = builder.graph(Merge.create(2));
-        builder.from(builder.source(Source.single(0))).to(merge);
-        builder.from(builder.source(Source.from(Arrays.asList(2, 3, 4)))).to(merge);
+        final UniformFanInShape<Integer, Integer> merge = builder.add(Merge.create(2));
+        builder.from(builder.add(Source.single(0))).to(merge);
+        builder.from(builder.add(Source.from(Arrays.asList(2, 3, 4)))).to(merge);
 
         // Exposing exactly one output port
         return new SourceShape<Integer>(merge.out());
@@ -205,7 +205,7 @@ public class CompositionDocTest {
     final RunnableGraph<BoxedUnit> closed2 =
       RunnableGraph.fromGraph(
         FlowGraph.create(builder -> {
-          final ClosedShape embeddedClosed = builder.graph(closed1);
+          final ClosedShape embeddedClosed = builder.add(closed1);
           return embeddedClosed; // Could return ClosedShape.getInstance()
     }));
     //#embed-closed

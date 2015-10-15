@@ -86,7 +86,7 @@ public class StreamBuffersRateDocTest {
 
     RunnableGraph.fromGraph(FlowGraph.create(b -> {
       final FanInShape2<String, Integer, Integer> zipper =
-          b.graph(ZipWith.create((String tick, Integer count) -> count));
+          b.add(ZipWith.create((String tick, Integer count) -> count));
 
       b.from(msgSource).via(conflate).to(zipper.in1());
       b.from(tickSource).to(zipper.in0());

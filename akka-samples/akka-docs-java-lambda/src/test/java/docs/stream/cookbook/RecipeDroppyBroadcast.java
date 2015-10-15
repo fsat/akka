@@ -65,11 +65,11 @@ public class RecipeDroppyBroadcast extends RecipeTest {
         RunnableGraph.fromGraph(FlowGraph.create(builder -> {
           final int outputCount = 3;
           final UniformFanOutShape<Integer, Integer> bcast =
-            builder.graph(Broadcast.create(outputCount));
-          builder.from(builder.source(myData)).to(bcast);
-          builder.from(bcast).to(builder.sink(droppySink(mySink1, 10)));
-          builder.from(bcast).to(builder.sink(droppySink(mySink2, 10)));
-          builder.from(bcast).to(builder.sink(droppySink(mySink3, 10)));
+            builder.add(Broadcast.create(outputCount));
+          builder.from(builder.add(myData)).to(bcast);
+          builder.from(bcast).to(builder.add(droppySink(mySink1, 10)));
+          builder.from(bcast).to(builder.add(droppySink(mySink2, 10)));
+          builder.from(bcast).to(builder.add(droppySink(mySink3, 10)));
           return ClosedShape.getInstance();
         }));
         //#droppy-bcast2

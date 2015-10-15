@@ -113,9 +113,9 @@ public class BidiFlowDocTest {
   public final BidiFlow<Message, ByteString, ByteString, Message, BoxedUnit> codecVerbose =
       BidiFlow.fromGraph(FlowGraph.create(b -> {
         final FlowShape<Message, ByteString> top =
-                b.graph(Flow.of(Message.class).map(BidiFlowDocTest::toBytes));
+                b.add(Flow.of(Message.class).map(BidiFlowDocTest::toBytes));
         final FlowShape<ByteString, Message> bottom =
-                b.graph(Flow.of(ByteString.class).map(BidiFlowDocTest::fromBytes));
+                b.add(Flow.of(ByteString.class).map(BidiFlowDocTest::fromBytes));
         return new BidiShape<>(top, bottom);
       }));
 
@@ -189,9 +189,9 @@ public class BidiFlowDocTest {
   public final BidiFlow<ByteString, ByteString, ByteString, ByteString, BoxedUnit> framing =
       BidiFlow.fromGraph(FlowGraph.create(b -> {
         final FlowShape<ByteString, ByteString> top =
-                b.graph(Flow.of(ByteString.class).map(BidiFlowDocTest::addLengthHeader));
+                b.add(Flow.of(ByteString.class).map(BidiFlowDocTest::addLengthHeader));
         final FlowShape<ByteString, ByteString> bottom =
-                b.graph(Flow.of(ByteString.class).transform(() -> new FrameParser()));
+                b.add(Flow.of(ByteString.class).transform(() -> new FrameParser()));
         return new BidiShape<>(top, bottom);
       }));
   //#framing

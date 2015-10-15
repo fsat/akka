@@ -21,7 +21,6 @@ import akka.stream.*;
 import akka.stream.testkit.AkkaSpec;
 import akka.stream.javadsl.FlexiRoute;
 import akka.stream.javadsl.FlowGraph.Builder;
-import akka.japi.function.Procedure3;
 import akka.japi.Pair;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
@@ -54,11 +53,10 @@ public class FlexiRouteTest {
           @Override
           public ClosedShape apply(Builder<Pair<Future<List<String>>, Future<List<String>>>> b, SinkShape<List<String>> o1,
                             SinkShape<List<String>> o2) throws Exception {
-            final UniformFanOutShape<String, String> fair = b.graph(new Fair<String>());
-            b.edge(b.source(in), fair.in());
-            b.flow(fair.out(0), Flow.of(String.class).grouped(100), o1.inlet());
-            b.flow(fair.out(1), Flow.of(String.class).grouped(100), o2.inlet());
-
+            final UniformFanOutShape<String, String> fair = b.add(new Fair<String>());
+            b.from(in).to(fair.in());
+            b.from(fair.out(0)).via(Flow.of(String.class).grouped(100)).to(o1);
+            b.from(fair.out(1)).via(Flow.of(String.class).grouped(100)).to(o2);
           return ClosedShape.getInstance();
         }
         })).run(materializer);
@@ -85,11 +83,10 @@ public class FlexiRouteTest {
           @Override
           public ClosedShape apply(Builder<Pair<Future<List<String>>, Future<List<String>>>> b, SinkShape<List<String>> o1,
                                    SinkShape<List<String>> o2) throws Exception {
-            final UniformFanOutShape<String, String> robin = b.graph(new StrictRoundRobin<String>());
-            b.edge(b.source(in), robin.in());
-            b.flow(robin.out(0), Flow.of(String.class).grouped(100), o1.inlet());
-            b.flow(robin.out(1), Flow.of(String.class).grouped(100), o2.inlet());
-
+            final UniformFanOutShape<String, String> robin = b.add(new StrictRoundRobin<String>());
+            b.from(in).to(robin.in());
+            b.from(robin.out(0)).via(Flow.of(String.class).grouped(100)).to(o1);
+            b.from(robin.out(1)).via(Flow.of(String.class).grouped(100)).to(o2);
           return ClosedShape.getInstance();
         }
         })).run(materializer);
@@ -118,12 +115,11 @@ public class FlexiRouteTest {
             @Override
             public ClosedShape apply(Builder<Pair<Future<List<Integer>>, Future<List<String>>>> b, SinkShape<List<Integer>> o1,
                               SinkShape<List<String>> o2) throws Exception {
-              final FanOutShape2<Pair<Integer, String>, Integer, String> unzip = b.graph(new Unzip<Integer, String>());
-              final Outlet<Pair<Integer, String>> src = b.source(Source.from(pairs));
-              b.edge(src, unzip.in());
-              b.flow(unzip.out0(), Flow.of(Integer.class).grouped(100), o1.inlet());
-              b.flow(unzip.out1(), Flow.of(String.class).grouped(100), o2.inlet());
-
+              final FanOutShape2<Pair<Integer, String>, Integer, String> unzip = b.add(new Unzip<Integer, String>());
+              final SourceShape<Pair<Integer, String>> src = b.add(Source.from(pairs));
+              b.from(src).to(unzip.in());
+              b.from(unzip.out0()).via(Flow.of(Integer.class).grouped(100)).to(o1);
+              b.from(unzip.out1()).via(Flow.of(String.class).grouped(100)).to(o2);
               return ClosedShape.getInstance();
             }
           })).run(materializer);

@@ -40,20 +40,20 @@ public class BidiFlowTest extends StreamTest {
                   @Override
                   public BidiShape<Integer, Long, ByteString, String> apply(Builder<BoxedUnit> b)
                           throws Exception {
-                      final FlowShape<Integer, Long> top = b.graph(Flow
-                              .of(Integer.class).map(new Function<Integer, Long>() {
-                                  @Override
-                                  public Long apply(Integer arg) {
-                                      return (long) ((int) arg) + 2;
-                                  }
-                              }));
-                      final FlowShape<ByteString, String> bottom = b.graph(Flow
-                              .of(ByteString.class).map(new Function<ByteString, String>() {
-                                  @Override
-                                  public String apply(ByteString arg) {
-                                      return arg.decodeString("UTF-8");
-                                  }
-                              }));
+                      final FlowShape<Integer, Long> top = b.add(Flow
+                        .of(Integer.class).map(new Function<Integer, Long>() {
+                          @Override
+                          public Long apply(Integer arg) {
+                            return (long) ((int) arg) + 2;
+                          }
+                        }));
+                      final FlowShape<ByteString, String> bottom = b.add(Flow
+                        .of(ByteString.class).map(new Function<ByteString, String>() {
+                          @Override
+                          public String apply(ByteString arg) {
+                            return arg.decodeString("UTF-8");
+                          }
+                        }));
                       return new BidiShape<Integer, Long, ByteString, String>(top
                               .inlet(), top.outlet(), bottom.inlet(), bottom.outlet());
                   }
@@ -66,20 +66,20 @@ public class BidiFlowTest extends StreamTest {
                           @Override
                           public BidiShape<Long, Integer, String, ByteString> apply(Builder<BoxedUnit> b)
                                   throws Exception {
-                              final FlowShape<Long, Integer> top = b.graph(Flow.of(Long.class)
-                                      .map(new Function<Long, Integer>() {
-                                          @Override
-                                          public Integer apply(Long arg) {
-                                              return (int) ((long) arg) + 2;
-                                          }
-                                      }));
-                              final FlowShape<String, ByteString> bottom = b.graph(Flow
-                                      .of(String.class).map(new Function<String, ByteString>() {
-                                          @Override
-                                          public ByteString apply(String arg) {
-                                              return ByteString.fromString(arg);
-                                          }
-                                      }));
+                              final FlowShape<Long, Integer> top = b.add(Flow.of(Long.class)
+                                .map(new Function<Long, Integer>() {
+                                  @Override
+                                  public Integer apply(Long arg) {
+                                    return (int) ((long) arg) + 2;
+                                  }
+                                }));
+                              final FlowShape<String, ByteString> bottom = b.add(Flow
+                                .of(String.class).map(new Function<String, ByteString>() {
+                                  @Override
+                                  public ByteString apply(String arg) {
+                                    return ByteString.fromString(arg);
+                                  }
+                                }));
                               return new BidiShape<Long, Integer, String, ByteString>(top
                                       .inlet(), top.outlet(), bottom.inlet(), bottom.outlet());
                           }
@@ -94,20 +94,20 @@ public class BidiFlowTest extends StreamTest {
                           public BidiShape<Integer, Long, ByteString, String> apply(Builder<Future<Integer>> b, SinkShape<Integer> sink)
                                   throws Exception {
                               b.from(Source.single(42)).to(sink);
-                              final FlowShape<Integer, Long> top = b.graph(Flow
-                                      .of(Integer.class).map(new Function<Integer, Long>() {
-                                          @Override
-                                          public Long apply(Integer arg) {
-                                              return (long) ((int) arg) + 2;
-                                          }
-                                      }));
-                              final FlowShape<ByteString, String> bottom = b.graph(Flow
-                                      .of(ByteString.class).map(new Function<ByteString, String>() {
-                                          @Override
-                                          public String apply(ByteString arg) {
-                                              return arg.decodeString("UTF-8");
-                                          }
-                                      }));
+                              final FlowShape<Integer, Long> top = b.add(Flow
+                                .of(Integer.class).map(new Function<Integer, Long>() {
+                                  @Override
+                                  public Long apply(Integer arg) {
+                                    return (long) ((int) arg) + 2;
+                                  }
+                                }));
+                              final FlowShape<ByteString, String> bottom = b.add(Flow
+                                .of(ByteString.class).map(new Function<ByteString, String>() {
+                                  @Override
+                                  public String apply(ByteString arg) {
+                                    return arg.decodeString("UTF-8");
+                                  }
+                                }));
                               return new BidiShape<Integer, Long, ByteString, String>(top
                                       .inlet(), top.outlet(), bottom.inlet(), bottom.outlet());
                           }
@@ -134,7 +134,7 @@ public class BidiFlowTest extends StreamTest {
               public ClosedShape apply(Builder<Pair<Future<Long>, Future<String>>> b, SinkShape<Long> st,
                   SinkShape<String> sb) throws Exception {
                 final BidiShape<Integer, Long, ByteString, String> s = b
-                    .graph(bidi);
+                    .add(bidi);
                 b.from(Source.single(1)).to(s.in1());
                 b.from(s.out1()).to(st);
                 b.from(Source.single(bytes)).to(s.in2());
@@ -207,18 +207,20 @@ public class BidiFlowTest extends StreamTest {
       @Override
       public ClosedShape apply(Builder<Future<Integer>> b,
           BidiShape<Integer, Long, ByteString, String> shape) throws Exception {
-        final FlowShape<String, Integer> left = b.graph(Flow.of(String.class).map(
-            new Function<String, Integer>() {
-              @Override public Integer apply(String arg) {
-                return Integer.valueOf(arg);
-              }
-            }));
-        final FlowShape<Long, ByteString> right = b.graph(Flow.of(Long.class).map(
-            new Function<Long, ByteString>() {
-              @Override public ByteString apply(Long arg) {
-                return ByteString.fromString("Hello " + arg);
-              }
-            }));
+        final FlowShape<String, Integer> left = b.add(Flow.of(String.class).map(
+          new Function<String, Integer>() {
+            @Override
+            public Integer apply(String arg) {
+              return Integer.valueOf(arg);
+            }
+          }));
+        final FlowShape<Long, ByteString> right = b.add(Flow.of(Long.class).map(
+          new Function<Long, ByteString>() {
+            @Override
+            public ByteString apply(Long arg) {
+              return ByteString.fromString("Hello " + arg);
+            }
+          }));
         b.from(shape.out2()).via(left).to(shape.in1())
          .from(shape.out1()).via(right).to(shape.in2());
 
@@ -235,15 +237,15 @@ public class BidiFlowTest extends StreamTest {
                 @Override
                 public FlowShape<String, Integer> apply(Builder<Future<Integer>> b,
                                                         SinkShape<Integer> sink) throws Exception {
-                    final UniformFanOutShape<Integer, Integer> bcast = b.graph(Broadcast.<Integer>create(2));
-                    final UniformFanInShape<Integer, Integer> merge = b.graph(Merge.<Integer>create(2));
-                    final FlowShape<String, Integer> flow = b.graph(Flow.of(String.class).map(
-                            new Function<String, Integer>() {
-                                @Override
-                                public Integer apply(String arg) {
-                                    return Integer.valueOf(arg);
-                                }
-                            }));
+                    final UniformFanOutShape<Integer, Integer> bcast = b.add(Broadcast.<Integer>create(2));
+                    final UniformFanInShape<Integer, Integer> merge = b.add(Merge.<Integer>create(2));
+                    final FlowShape<String, Integer> flow = b.add(Flow.of(String.class).map(
+                      new Function<String, Integer>() {
+                        @Override
+                        public Integer apply(String arg) {
+                          return Integer.valueOf(arg);
+                        }
+                      }));
                     b.from(bcast).to(sink)
                             .from(Source.single(1)).via(bcast).to(merge)
                             .from(flow).to(merge);
@@ -255,9 +257,9 @@ public class BidiFlowTest extends StreamTest {
                 @Override
                 public FlowShape<Long, ByteString> apply(Builder<Future<List<Long>>> b,
                                                          SinkShape<List<Long>> sink) throws Exception {
-                    final FlowShape<Long, List<Long>> flow = b.graph(Flow.of(Long.class).grouped(10));
+                    final FlowShape<Long, List<Long>> flow = b.add(Flow.of(Long.class).grouped(10));
                     b.from(flow).to(sink);
-                    return new FlowShape<Long, ByteString>(flow.inlet(), b.source(Source.single(ByteString.fromString("10"))));
+                    return new FlowShape<Long, ByteString>(flow.inlet(), b.add(Source.single(ByteString.fromString("10"))).outlet());
                 }
             }));
     final Pair<Pair<Future<Integer>, Future<Integer>>, Future<List<Long>>> result =

@@ -16,7 +16,6 @@ import akka.stream.testkit.javadsl.TestSink;
 import akka.stream.testkit.javadsl.TestSource;
 import akka.testkit.JavaTestKit;
 import akka.util.ByteString;
-import scala.Tuple3;
 import scala.runtime.BoxedUnit;
 
 import org.reactivestreams.Subscription;
@@ -64,7 +63,7 @@ public class RecipeKeepAlive extends RecipeTest {
         final RunnableGraph<BoxedUnit> graph = RunnableGraph.fromGraph(
           FlowGraph.create((builder) -> {
               final MergePreferredShape<ByteString> unfairMerge =
-                builder.graph(MergePreferred.create(1));
+                builder.add(MergePreferred.create(1));
               // If data is available then no keepalive is injected
               builder.from(dataStream).to(unfairMerge.preferred());
               builder.from(ticks).via(tickToKeepAlivePacket).to(unfairMerge.in(0));
