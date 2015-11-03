@@ -90,7 +90,6 @@ object ContentType {
 
 object ContentTypes {
   val `application/json` = ContentType(MediaTypes.`application/json`)
-  val `application/json;boundary=NL` = ContentType(MediaTypes.`application/json;boundary=NL`)
   val `application/octet-stream` = ContentType(MediaTypes.`application/octet-stream`)
 
   val `text/plain` = ContentType(MediaTypes.`text/plain`)

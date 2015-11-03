@@ -36,7 +36,7 @@ object FramingWithContentType {
 trait JsonEntityStreamingSupport {
 
   /** `application/json` specific Framing implementation */
-  implicit object JsonFraming extends FramingWithContentType { // TODO
+  implicit object JsonFraming extends FramingWithContentType { // TODO find the max object size
     override final val flow = Flow[ByteString].via(Framing.json(Int.MaxValue))
 
     override def supports(ct: ContentType): Boolean = ct match {
@@ -44,9 +44,7 @@ trait JsonEntityStreamingSupport {
       case _                               ⇒ false
     }
 
-    final val _supported = Set(ContentTypes.`application/json`)
-
-    override def supported: Set[ContentType] = _supported
+    override val supported = Set(ContentTypes.`application/json`)
   }
 
 }
