@@ -129,6 +129,25 @@ class HttpConfigurationSpec extends AkkaSpec {
         server.parserSettings.illegalHeaderWarnings should ===(On)
       }
     }
+
+    "change max-content-length for all by setting `akka.http.parsing`, unless all override it" in {
+      configuredSystem("""
+        akka.http {
+          parsing.max-content-length = 10m
+          server.parsing.max-content-length = 200m
+          client.parsing.max-content-length = 30m
+          host-connection-pool.client.parsing.max-content-length = 50m
+        }""") { sys ⇒
+        val client = ClientConnectionSettings(sys)
+        client.parserSettings.maxContentLength should ===(31457280)
+
+        val pool = ConnectionPoolSettings(sys)
+        pool.connectionSettings.parserSettings.maxContentLength should ===(52428800)
+
+        val server = ServerSettings(sys)
+        server.parserSettings.maxContentLength should ===(209715200)
+      }
+    }
   }
 
   def configuredSystem(overrides: String)(block: ActorSystem ⇒ Unit) = {
