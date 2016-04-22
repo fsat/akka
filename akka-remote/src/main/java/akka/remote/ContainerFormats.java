@@ -2258,6 +2258,529 @@ public final class ContainerFormats {
     // @@protoc_insertion_point(class_scope:Identify)
   }
 
+  public interface ActorIdentityOrBuilder
+      extends akka.protobuf.MessageOrBuilder {
+
+    // required .Payload correlationId = 1;
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    boolean hasCorrelationId();
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    akka.remote.ContainerFormats.Payload getCorrelationId();
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    akka.remote.ContainerFormats.PayloadOrBuilder getCorrelationIdOrBuilder();
+  }
+  /**
+   * Protobuf type {@code ActorIdentity}
+   */
+  public static final class ActorIdentity extends
+      akka.protobuf.GeneratedMessage
+      implements ActorIdentityOrBuilder {
+    // Use ActorIdentity.newBuilder() to construct.
+    private ActorIdentity(akka.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private ActorIdentity(boolean noInit) { this.unknownFields = akka.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ActorIdentity defaultInstance;
+    public static ActorIdentity getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public ActorIdentity getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final akka.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final akka.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ActorIdentity(
+        akka.protobuf.CodedInputStream input,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      akka.protobuf.UnknownFieldSet.Builder unknownFields =
+          akka.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              akka.remote.ContainerFormats.Payload.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = correlationId_.toBuilder();
+              }
+              correlationId_ = input.readMessage(akka.remote.ContainerFormats.Payload.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(correlationId_);
+                correlationId_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+          }
+        }
+      } catch (akka.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new akka.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final akka.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return akka.remote.ContainerFormats.internal_static_ActorIdentity_descriptor;
+    }
+
+    protected akka.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return akka.remote.ContainerFormats.internal_static_ActorIdentity_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              akka.remote.ContainerFormats.ActorIdentity.class, akka.remote.ContainerFormats.ActorIdentity.Builder.class);
+    }
+
+    public static akka.protobuf.Parser<ActorIdentity> PARSER =
+        new akka.protobuf.AbstractParser<ActorIdentity>() {
+      public ActorIdentity parsePartialFrom(
+          akka.protobuf.CodedInputStream input,
+          akka.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws akka.protobuf.InvalidProtocolBufferException {
+        return new ActorIdentity(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public akka.protobuf.Parser<ActorIdentity> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required .Payload correlationId = 1;
+    public static final int CORRELATIONID_FIELD_NUMBER = 1;
+    private akka.remote.ContainerFormats.Payload correlationId_;
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    public boolean hasCorrelationId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    public akka.remote.ContainerFormats.Payload getCorrelationId() {
+      return correlationId_;
+    }
+    /**
+     * <code>required .Payload correlationId = 1;</code>
+     */
+    public akka.remote.ContainerFormats.PayloadOrBuilder getCorrelationIdOrBuilder() {
+      return correlationId_;
+    }
+
+    private void initFields() {
+      correlationId_ = akka.remote.ContainerFormats.Payload.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasCorrelationId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getCorrelationId().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(akka.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, correlationId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += akka.protobuf.CodedOutputStream
+          .computeMessageSize(1, correlationId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        akka.protobuf.ByteString data)
+        throws akka.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        akka.protobuf.ByteString data,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(byte[] data)
+        throws akka.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        byte[] data,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws akka.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        java.io.InputStream input,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseDelimitedFrom(
+        java.io.InputStream input,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        akka.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static akka.remote.ContainerFormats.ActorIdentity parseFrom(
+        akka.protobuf.CodedInputStream input,
+        akka.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(akka.remote.ContainerFormats.ActorIdentity prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        akka.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code ActorIdentity}
+     */
+    public static final class Builder extends
+        akka.protobuf.GeneratedMessage.Builder<Builder>
+       implements akka.remote.ContainerFormats.ActorIdentityOrBuilder {
+      public static final akka.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return akka.remote.ContainerFormats.internal_static_ActorIdentity_descriptor;
+      }
+
+      protected akka.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return akka.remote.ContainerFormats.internal_static_ActorIdentity_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                akka.remote.ContainerFormats.ActorIdentity.class, akka.remote.ContainerFormats.ActorIdentity.Builder.class);
+      }
+
+      // Construct using akka.remote.ContainerFormats.ActorIdentity.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          akka.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (akka.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getCorrelationIdFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (correlationIdBuilder_ == null) {
+          correlationId_ = akka.remote.ContainerFormats.Payload.getDefaultInstance();
+        } else {
+          correlationIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public akka.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return akka.remote.ContainerFormats.internal_static_ActorIdentity_descriptor;
+      }
+
+      public akka.remote.ContainerFormats.ActorIdentity getDefaultInstanceForType() {
+        return akka.remote.ContainerFormats.ActorIdentity.getDefaultInstance();
+      }
+
+      public akka.remote.ContainerFormats.ActorIdentity build() {
+        akka.remote.ContainerFormats.ActorIdentity result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public akka.remote.ContainerFormats.ActorIdentity buildPartial() {
+        akka.remote.ContainerFormats.ActorIdentity result = new akka.remote.ContainerFormats.ActorIdentity(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (correlationIdBuilder_ == null) {
+          result.correlationId_ = correlationId_;
+        } else {
+          result.correlationId_ = correlationIdBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(akka.protobuf.Message other) {
+        if (other instanceof akka.remote.ContainerFormats.ActorIdentity) {
+          return mergeFrom((akka.remote.ContainerFormats.ActorIdentity)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(akka.remote.ContainerFormats.ActorIdentity other) {
+        if (other == akka.remote.ContainerFormats.ActorIdentity.getDefaultInstance()) return this;
+        if (other.hasCorrelationId()) {
+          mergeCorrelationId(other.getCorrelationId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasCorrelationId()) {
+          
+          return false;
+        }
+        if (!getCorrelationId().isInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          akka.protobuf.CodedInputStream input,
+          akka.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        akka.remote.ContainerFormats.ActorIdentity parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (akka.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (akka.remote.ContainerFormats.ActorIdentity) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required .Payload correlationId = 1;
+      private akka.remote.ContainerFormats.Payload correlationId_ = akka.remote.ContainerFormats.Payload.getDefaultInstance();
+      private akka.protobuf.SingleFieldBuilder<
+          akka.remote.ContainerFormats.Payload, akka.remote.ContainerFormats.Payload.Builder, akka.remote.ContainerFormats.PayloadOrBuilder> correlationIdBuilder_;
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public boolean hasCorrelationId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public akka.remote.ContainerFormats.Payload getCorrelationId() {
+        if (correlationIdBuilder_ == null) {
+          return correlationId_;
+        } else {
+          return correlationIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public Builder setCorrelationId(akka.remote.ContainerFormats.Payload value) {
+        if (correlationIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          correlationId_ = value;
+          onChanged();
+        } else {
+          correlationIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public Builder setCorrelationId(
+          akka.remote.ContainerFormats.Payload.Builder builderForValue) {
+        if (correlationIdBuilder_ == null) {
+          correlationId_ = builderForValue.build();
+          onChanged();
+        } else {
+          correlationIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public Builder mergeCorrelationId(akka.remote.ContainerFormats.Payload value) {
+        if (correlationIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              correlationId_ != akka.remote.ContainerFormats.Payload.getDefaultInstance()) {
+            correlationId_ =
+              akka.remote.ContainerFormats.Payload.newBuilder(correlationId_).mergeFrom(value).buildPartial();
+          } else {
+            correlationId_ = value;
+          }
+          onChanged();
+        } else {
+          correlationIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public Builder clearCorrelationId() {
+        if (correlationIdBuilder_ == null) {
+          correlationId_ = akka.remote.ContainerFormats.Payload.getDefaultInstance();
+          onChanged();
+        } else {
+          correlationIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public akka.remote.ContainerFormats.Payload.Builder getCorrelationIdBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getCorrelationIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      public akka.remote.ContainerFormats.PayloadOrBuilder getCorrelationIdOrBuilder() {
+        if (correlationIdBuilder_ != null) {
+          return correlationIdBuilder_.getMessageOrBuilder();
+        } else {
+          return correlationId_;
+        }
+      }
+      /**
+       * <code>required .Payload correlationId = 1;</code>
+       */
+      private akka.protobuf.SingleFieldBuilder<
+          akka.remote.ContainerFormats.Payload, akka.remote.ContainerFormats.Payload.Builder, akka.remote.ContainerFormats.PayloadOrBuilder> 
+          getCorrelationIdFieldBuilder() {
+        if (correlationIdBuilder_ == null) {
+          correlationIdBuilder_ = new akka.protobuf.SingleFieldBuilder<
+              akka.remote.ContainerFormats.Payload, akka.remote.ContainerFormats.Payload.Builder, akka.remote.ContainerFormats.PayloadOrBuilder>(
+                  correlationId_,
+                  getParentForChildren(),
+                  isClean());
+          correlationId_ = null;
+        }
+        return correlationIdBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:ActorIdentity)
+    }
+
+    static {
+      defaultInstance = new ActorIdentity(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:ActorIdentity)
+  }
+
   public interface PayloadOrBuilder
       extends akka.protobuf.MessageOrBuilder {
 
@@ -2854,6 +3377,11 @@ public final class ContainerFormats {
     akka.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Identify_fieldAccessorTable;
   private static akka.protobuf.Descriptors.Descriptor
+    internal_static_ActorIdentity_descriptor;
+  private static
+    akka.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ActorIdentity_fieldAccessorTable;
+  private static akka.protobuf.Descriptors.Descriptor
     internal_static_Payload_descriptor;
   private static
     akka.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2873,11 +3401,13 @@ public final class ContainerFormats {
       "on\022\027\n\017messageManifest\030\004 \001(\014\022\026\n\016wildcardF" +
       "anOut\030\005 \001(\010\"8\n\tSelection\022\032\n\004type\030\001 \002(\0162\014" +
       ".PatternType\022\017\n\007matcher\030\002 \001(\t\"\'\n\010Identif" +
-      "y\022\033\n\tmessageId\030\001 \002(\0132\010.Payload\"Q\n\007Payloa" +
-      "d\022\027\n\017enclosedMessage\030\001 \002(\014\022\024\n\014serializer" +
-      "Id\030\002 \002(\005\022\027\n\017messageManifest\030\004 \001(\014*<\n\013Pat" +
-      "ternType\022\n\n\006PARENT\020\000\022\016\n\nCHILD_NAME\020\001\022\021\n\r",
-      "CHILD_PATTERN\020\002B\017\n\013akka.remoteH\001"
+      "y\022\033\n\tmessageId\030\001 \002(\0132\010.Payload\"0\n\rActorI" +
+      "dentity\022\037\n\rcorrelationId\030\001 \002(\0132\010.Payload" +
+      "\"Q\n\007Payload\022\027\n\017enclosedMessage\030\001 \002(\014\022\024\n\014" +
+      "serializerId\030\002 \002(\005\022\027\n\017messageManifest\030\004 ",
+      "\001(\014*<\n\013PatternType\022\n\n\006PARENT\020\000\022\016\n\nCHILD_" +
+      "NAME\020\001\022\021\n\rCHILD_PATTERN\020\002B\017\n\013akka.remote" +
+      "H\001"
     };
     akka.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new akka.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2902,8 +3432,14 @@ public final class ContainerFormats {
             akka.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Identify_descriptor,
               new java.lang.String[] { "MessageId", });
-          internal_static_Payload_descriptor =
+          internal_static_ActorIdentity_descriptor =
             getDescriptor().getMessageTypes().get(3);
+          internal_static_ActorIdentity_fieldAccessorTable = new
+            akka.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ActorIdentity_descriptor,
+              new java.lang.String[] { "CorrelationId", });
+          internal_static_Payload_descriptor =
+            getDescriptor().getMessageTypes().get(4);
           internal_static_Payload_fieldAccessorTable = new
             akka.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Payload_descriptor,

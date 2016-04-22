@@ -14,17 +14,19 @@ class MessageContainerSerializerSpec extends AkkaSpec {
 
   "MessageContainerSerializer" must {
     Seq(
-      ActorSelectionMessage("hello", Vector(
+      classOf[ActorSelectionMessage].getSimpleName -> ActorSelectionMessage("hello", Vector(
         SelectChildName("user"), SelectChildName("a"), SelectChildName("b"), SelectParent,
         SelectChildPattern("*"), SelectChildName("c")), wildcardFanOut = true),
-      Identify("some-message")).foreach { item ⇒
-        s"resolve serializer for ${item.getClass.getSimpleName}" in {
-          ser.serializerFor(item.getClass).getClass should ===(classOf[MessageContainerSerializer])
-        }
+      classOf[Identify].getSimpleName -> Identify("some-message"),
+      s"${classOf[ActorIdentity].getSimpleName} without actor ref" -> ActorIdentity("some-message", ref = None)).foreach {
+        case (scenario, item) ⇒
+          s"resolve serializer for $scenario" in {
+            ser.serializerFor(item.getClass).getClass should ===(classOf[MessageContainerSerializer])
+          }
 
-        s"serialize and de-serialize ${item.getClass.getSimpleName}" in {
-          verifySerialization(item)
-        }
+          s"serialize and de-serialize $scenario" in {
+            verifySerialization(item)
+          }
       }
 
     def verifySerialization(msg: AnyRef): Unit = {

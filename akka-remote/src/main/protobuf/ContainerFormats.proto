@@ -32,6 +32,10 @@ message Identify {
   required Payload messageId = 1;
 }
 
+message ActorIdentity {
+  required Payload correlationId = 1;
+}
+
 message Payload {
   required bytes enclosedMessage = 1;
   required int32 serializerId = 2;

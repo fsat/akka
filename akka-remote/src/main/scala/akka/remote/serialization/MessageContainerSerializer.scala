@@ -29,6 +29,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
 
   def toBinary(obj: AnyRef): Array[Byte] = obj match {
     case identify: Identify         ⇒ serializeIdentify(identify)
+    case identity: ActorIdentity    ⇒ serializeActorIdentity(identity)
     case sel: ActorSelectionMessage ⇒ serializeSelection(sel)
     case _                          ⇒ throw new IllegalArgumentException(s"Cannot serialize object of type [${obj.getClass.getName}]")
   }
@@ -72,6 +73,13 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
       .build()
       .toByteArray
 
+  private def serializeActorIdentity(actorIdentity: ActorIdentity): Array[Byte] =
+    ContainerFormats.ActorIdentity.newBuilder()
+      .setCorrelationId(payloadBuilder(actorIdentity.correlationId))
+      // TODO: serialize ref field
+      .build()
+      .toByteArray
+
   private def payloadBuilder(input: Any): ContainerFormats.Payload.Builder = {
     val payload = input.asInstanceOf[AnyRef]
     val builder = ContainerFormats.Payload.newBuilder()
@@ -104,7 +112,8 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
     manifest match {
       case Some(forClass) if forClass == classOf[ActorSelectionMessage] ⇒ deserializeSelection(bytes)
       case Some(forClass) if forClass == classOf[Identify] ⇒ deserializeIdentify(bytes)
-      case Some(unsupported) ⇒ throw new IllegalArgumentException(s"Cannot deserialize object of type [${unsupported.getClass.getName}]")
+      case Some(forClass) if forClass == classOf[ActorIdentity] ⇒ deserializeActorIdentity(bytes)
+      case Some(unsupported) ⇒ throw new IllegalArgumentException(s"Cannot deserialize object of type [${unsupported.getName}]")
       case None ⇒ throw new IllegalArgumentException(s"Cannot deserialize object of unknown type")
     }
   }
@@ -134,6 +143,13 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
     val identify = ContainerFormats.Identify.parseFrom(bytes)
     val messageId = deserializePayload(identify.getMessageId)
     Identify(messageId)
+  }
+
+  private def deserializeActorIdentity(bytes: Array[Byte]): ActorIdentity = {
+    val actorIdentity = ContainerFormats.ActorIdentity.parseFrom(bytes)
+    val correlationId = deserializePayload(actorIdentity.getCorrelationId)
+    // TODO: deserialize ref field
+    ActorIdentity(correlationId, None)
   }
 
   private def deserializePayload(payload: ContainerFormats.Payload): Any = {
