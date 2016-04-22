@@ -3,14 +3,11 @@
  */
 package akka.remote.serialization
 
+import akka.remote.transport.AkkaPduCodec.Payload
+
 import scala.collection.immutable
 import akka.protobuf.ByteString
-import akka.actor.ActorSelectionMessage
-import akka.actor.ExtendedActorSystem
-import akka.actor.SelectChildName
-import akka.actor.SelectChildPattern
-import akka.actor.SelectParent
-import akka.actor.SelectionPathElement
+import akka.actor._
 import akka.remote.ContainerFormats
 import akka.serialization.SerializationExtension
 import akka.serialization.BaseSerializer
@@ -31,6 +28,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
   def includeManifest: Boolean = false
 
   def toBinary(obj: AnyRef): Array[Byte] = obj match {
+    case identify: Identify         ⇒ serializeIdentify(identify)
     case sel: ActorSelectionMessage ⇒ serializeSelection(sel)
     case _                          ⇒ throw new IllegalArgumentException(s"Cannot serialize object of type [${obj.getClass.getName}]")
   }
@@ -68,6 +66,34 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
     builder.build().toByteArray
   }
 
+  private def serializeIdentify(identify: Identify): Array[Byte] =
+    ContainerFormats.Identify.newBuilder()
+      .setMessageId(payloadBuilder(identify.messageId))
+      .build()
+      .toByteArray
+
+  private def payloadBuilder(input: Any): ContainerFormats.Payload.Builder = {
+    val payload = input.asInstanceOf[AnyRef]
+    val builder = ContainerFormats.Payload.newBuilder()
+    val serializer = serialization.findSerializerFor(payload)
+
+    builder
+      .setEnclosedMessage(ByteString.copyFrom(serializer.toBinary(payload)))
+      .setSerializerId(serializer.identifier)
+
+    serializer match {
+      case ser2: SerializerWithStringManifest ⇒
+        val manifest = ser2.manifest(payload)
+        if (manifest != "")
+          builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
+      case _ ⇒
+        if (serializer.includeManifest)
+          builder.setMessageManifest(ByteString.copyFromUtf8(payload.getClass.getName))
+    }
+
+    builder
+  }
+
   private def buildPattern(matcher: Option[String], tpe: ContainerFormats.PatternType): ContainerFormats.Selection.Builder = {
     val builder = ContainerFormats.Selection.newBuilder().setType(tpe)
     matcher foreach builder.setMatcher
@@ -75,6 +101,15 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
   }
 
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+    manifest match {
+      case Some(forClass) if forClass == classOf[ActorSelectionMessage] ⇒ deserializeSelection(bytes)
+      case Some(forClass) if forClass == classOf[Identify] ⇒ deserializeIdentify(bytes)
+      case Some(unsupported) ⇒ throw new IllegalArgumentException(s"Cannot deserialize object of type [${unsupported.getClass.getName}]")
+      case None ⇒ throw new IllegalArgumentException(s"Cannot deserialize object of unknown type")
+    }
+  }
+
+  private def deserializeSelection(bytes: Array[Byte]): ActorSelectionMessage = {
     val selectionEnvelope = ContainerFormats.SelectionEnvelope.parseFrom(bytes)
     val manifest = if (selectionEnvelope.hasMessageManifest) selectionEnvelope.getMessageManifest.toStringUtf8 else ""
     val msg = serialization.deserialize(
@@ -94,4 +129,19 @@ class MessageContainerSerializer(val system: ExtendedActorSystem) extends BaseSe
     val wildcardFanOut = if (selectionEnvelope.hasWildcardFanOut) selectionEnvelope.getWildcardFanOut else false
     ActorSelectionMessage(msg, elements, wildcardFanOut)
   }
+
+  private def deserializeIdentify(bytes: Array[Byte]): Identify = {
+    val identify = ContainerFormats.Identify.parseFrom(bytes)
+    val messageId = deserializePayload(identify.getMessageId)
+    Identify(messageId)
+  }
+
+  private def deserializePayload(payload: ContainerFormats.Payload): Any = {
+    val manifest = if (payload.hasMessageManifest) payload.getMessageManifest.toStringUtf8 else ""
+    serialization.deserialize(
+      payload.getEnclosedMessage.toByteArray,
+      payload.getSerializerId,
+      manifest).get
+  }
+
 }

@@ -6,26 +6,26 @@ package akka.remote.serialization
 
 import akka.serialization.SerializationExtension
 import akka.testkit.AkkaSpec
-import akka.actor.ActorSelectionMessage
-import akka.actor.SelectChildName
-import akka.actor.SelectParent
-import akka.actor.SelectChildPattern
+import akka.actor._
 
 class MessageContainerSerializerSpec extends AkkaSpec {
 
   val ser = SerializationExtension(system)
 
-  "DaemonMsgCreateSerializer" must {
-
-    "resolve serializer for ActorSelectionMessage" in {
-      ser.serializerFor(classOf[ActorSelectionMessage]).getClass should ===(classOf[MessageContainerSerializer])
-    }
-
-    "serialize and de-serialize ActorSelectionMessage" in {
-      verifySerialization(ActorSelectionMessage("hello", Vector(
+  "MessageContainerSerializer" must {
+    Seq(
+      ActorSelectionMessage("hello", Vector(
         SelectChildName("user"), SelectChildName("a"), SelectChildName("b"), SelectParent,
-        SelectChildPattern("*"), SelectChildName("c")), wildcardFanOut = true))
-    }
+        SelectChildPattern("*"), SelectChildName("c")), wildcardFanOut = true),
+      Identify("some-message")).foreach { item ⇒
+        s"resolve serializer for ${item.getClass.getSimpleName}" in {
+          ser.serializerFor(item.getClass).getClass should ===(classOf[MessageContainerSerializer])
+        }
+
+        s"serialize and de-serialize ${item.getClass.getSimpleName}" in {
+          verifySerialization(item)
+        }
+      }
 
     def verifySerialization(msg: AnyRef): Unit = {
       ser.deserialize(ser.serialize(msg).get, msg.getClass).get should ===(msg)

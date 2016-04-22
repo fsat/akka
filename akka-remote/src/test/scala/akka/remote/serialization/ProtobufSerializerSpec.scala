@@ -8,8 +8,8 @@ import akka.serialization.SerializationExtension
 import akka.testkit.AkkaSpec
 import akka.remote.WireFormats.SerializedMessage
 import akka.remote.ProtobufProtocol.MyMessage
-import akka.remote.MessageSerializer
-import akka.actor.ExtendedActorSystem
+import akka.remote.{ RemoteActorRef, MessageSerializer }
+import akka.actor.{ ActorRef, ExtendedActorSystem }
 
 class ProtobufSerializerSpec extends AkkaSpec {
 
