@@ -892,6 +892,8 @@ class DDataShardCoordinator(typeName: String, settings: ClusterShardingSettings,
 
   node.subscribe(self, ClusterEvent.InitialStateAsEvents, ClusterShuttingDown.getClass)
 
+  private var getShardHomeRequests: Set[(ActorRef, GetShardHome)] = Set.empty
+
   // get state from ddata replicator, repeat until GetSuccess
   getCoordinatorState()
   getAllShards()
@@ -963,9 +965,17 @@ class DDataShardCoordinator(typeName: String, settings: ClusterShardingSettings,
   // which was scheduled by previous watchStateActors
   def waitingForStateInitialized: Receive = {
     case StateInitialized ⇒
+      getShardHomeRequests.foreach {
+        case (requester, message) ⇒ self.tell(message, sender = requester)
+      }
+      getShardHomeRequests = Set.empty
+
       unstashAll()
       stateInitialized()
       activate()
+
+    case v: GetShardHome ⇒
+      getShardHomeRequests += (sender() -> v)
 
     case _ ⇒ stash()
   }
@@ -1010,12 +1020,19 @@ class DDataShardCoordinator(typeName: String, settings: ClusterShardingSettings,
         key, error, evt)
       throw cause
 
+    case v: GetShardHome ⇒
+      getShardHomeRequests += (sender() -> v)
+
     case _ ⇒ stash()
   }
 
   private def unbecomeAfterUpdate[E <: DomainEvent](evt: E, afterUpdateCallback: E ⇒ Unit): Unit = {
     context.unbecome()
     afterUpdateCallback(evt)
+    getShardHomeRequests.foreach {
+      case (requester, message) ⇒ self.tell(message, sender = requester)
+    }
+    getShardHomeRequests = Set.empty
     unstashAll()
   }
 
